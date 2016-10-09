@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 自定义圆形加载进度条的旋转动画 -->
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="8000"
+    android:fromDegrees="0"
+    android:pivotX="50%"
+    android:pivotY="50%"
+    android:repeatCount="-1"
+    android:repeatMode="restart"
+    android:toDegrees="3600" >
+
+</rotate>

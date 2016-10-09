@@ -117,79 +117,7 @@ public class ShowImageFromWebActivity extends Activity implements View.OnClickLi
         }
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        MenuItem.OnMenuItemClickListener handler = new MenuItem.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getTitle() == "保存到手机") {
-                    new SaveImage().execute(); // Android 4.0以后要使用线程来访问网络
-                } else {
-                    return false;
-                }
-                return true;
-            }
-        };
 
-        if (v instanceof WebView) {
-            WebView.HitTestResult result = ((WebView) v).getHitTestResult();
-            if (result != null) {
-                int type = result.getType();
-                if (type == WebView.HitTestResult.IMAGE_TYPE || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
-                    longClickUrl = result.getExtra();
-                    menu.setHeaderTitle("提示");
-                    menu.add(0, v.getId(), 0, "保存到手机").setOnMenuItemClickListener(handler);
-                }
-            }
-        }
-    }
-
-    /***
-     * 功能：用线程保存图片
-     *
-     * @author wangyp
-     *
-     */
-    private class SaveImage extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            String result = "";
-            try {
-                String sdcard = Environment.getExternalStorageDirectory().toString();
-                File file = new File(sdcard + "/Download");
-                if (!file.exists()) {
-                    file.mkdirs();
-                }
-                int idx = longClickUrl.lastIndexOf(".");
-                String ext = longClickUrl.substring(idx);
-                file = new File(sdcard + "/Download/" + new Date().getTime() + ext);
-                InputStream inputStream = null;
-                URL url = new URL(longClickUrl);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setConnectTimeout(20000);
-                if (conn.getResponseCode() == 200) {
-                    inputStream = conn.getInputStream();
-                }
-                byte[] buffer = new byte[4096];
-                int len = 0;
-                FileOutputStream outStream = new FileOutputStream(file);
-                while ((len = inputStream.read(buffer)) != -1) {
-                    outStream.write(buffer, 0, len);
-                }
-                outStream.close();
-                result = "图片已保存至：" + file.getAbsolutePath();
-            } catch (Exception e) {
-                result = "保存失败！" + e.getLocalizedMessage();
-            }
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-        }
-    }
 
     /**
      * 开始下载图片
