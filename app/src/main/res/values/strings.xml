@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ShowZoomableImageFromWebView</string>
+    <!--toast_view_actionsheet-->
+    <string name="cancel_toast_view_actionsheet">取消</string>
 </resources>
