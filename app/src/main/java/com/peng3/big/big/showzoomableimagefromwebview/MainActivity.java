@@ -42,7 +42,7 @@ import okhttp3.Response;
  * Email  : bigbigpeng3@gmail.com
  * Author : peng zhang
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity  {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     public static final String URL_ALL = "urls";
@@ -64,34 +64,17 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //就让我更无耻一点吧!
         url = "http://www.jianshu.com/p/d614bb028588";
 
         mWebView = (WebView) findViewById(R.id.web_view);
         mWebView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (v instanceof WebView) {
-                    WebView.HitTestResult result = ((WebView) v).getHitTestResult();
-                    if (result != null) {
-                        int type = result.getType();
-                        if (type == WebView.HitTestResult.IMAGE_TYPE || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
-                            longClickUrl = result.getExtra();
-                           showDialog(longClickUrl);
-                        }
-                    }
-                }
+                responseWebLongClick(v);
                 return false;
             }
         });
 
-        mWebView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                return false;
-            }
-        });
 
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setDefaultTextEncodingName("UTF -8");
@@ -127,8 +110,8 @@ public class MainActivity extends Activity {
                 // html加载完成之后，添加监听图片的点击js函数
                 addImageClickListner();
 
-                view.loadUrl("javascript:window.local_obj.showSource('<head>'+"
-                        + "document.getElementsByTagName('html')[0].innerHTML+'</head>');");
+                //解析 HTML
+                parseHTML(view);
             }
 
 
@@ -140,48 +123,43 @@ public class MainActivity extends Activity {
             }
         });
 
-        mWebView.setWebChromeClient(new WebChromeClient() {
-
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                super.onProgressChanged(view, newProgress);
-            }
-
-            // 网页标题
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                super.onReceivedTitle(view, title);
-
-            }
-        });
-
         mWebView.loadUrl(url);
         mHandler=new Handler();
 
     }
 
+    private void parseHTML(WebView view) {
+        view.loadUrl("javascript:window.local_obj.showSource('<head>'+"
+                + "document.getElementsByTagName('html')[0].innerHTML+'</head>');");
+    }
+
+    private void responseWebLongClick(View v) {
+        if (v instanceof WebView) {
+            WebView.HitTestResult result = ((WebView) v).getHitTestResult();
+            if (result != null) {
+                int type = result.getType();
+                if (type == WebView.HitTestResult.IMAGE_TYPE || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+                    longClickUrl = result.getExtra();
+                   showDialog(longClickUrl);
+                }
+            }
+        }
+    }
+
     private void showDialog(final String url) {
-        ActionSheetDialog actionSheetDialog = new ActionSheetDialog(this)
+        new ActionSheetDialog(this)
                 .builder()
                 .setCancelable(true)
                 .setCanceledOnTouchOutside(true)
                 .addSheetItem(
-                        "请选择地图",
-                        ActionSheetDialog.SheetItemColor.Grey,
+                        "保存到相册",
+                        ActionSheetDialog.SheetItemColor.Blue,
                         new ActionSheetDialog.OnSheetItemClickListener() {
                             @Override
                             public void onClick(int which) {
+                                downloadImage(url);
                             }
-                        });
-        actionSheetDialog.addSheetItem(
-                "保存到相册",
-                ActionSheetDialog.SheetItemColor.Blue,
-                new ActionSheetDialog.OnSheetItemClickListener() {
-                    @Override
-                    public void onClick(int which) {
-                        downloadImage(url);
-                    }
-                }).show();
+                        }).show();
     }
 
     // 注入js函数监听
@@ -204,7 +182,6 @@ public class MainActivity extends Activity {
 
         private Context context;
 
-
         public MyJavascriptInterface(Context context) {
             this.context = context;
         }
@@ -215,7 +192,6 @@ public class MainActivity extends Activity {
             Intent intent = new Intent();
             intent.putExtra("image", img);
             intent.putStringArrayListExtra(URL_ALL, (ArrayList<String>) listImgSrc);
-//            intent.setClass(context, ShowWebImageActivity.class);
             intent.setClass(context, ShowImageFromWebActivity.class);
             context.startActivity(intent);
             System.out.println(img);
@@ -228,7 +204,6 @@ public class MainActivity extends Activity {
     final class InJavaScriptLocalObj {
         @android.webkit.JavascriptInterface
         public void showSource(String html) {
-//            System.out.println("====>html="+html);
             getImageUrl(html);
         }
     }
@@ -260,85 +235,10 @@ public class MainActivity extends Activity {
             Matcher matcher = Pattern.compile(IMGSRC_REG).matcher(image);
             while (matcher.find()) {
                 listImgSrc.add(matcher.group().substring(0, matcher.group().length() - 1));
-//                Log.d(TAG,matcher.group().substring(0, matcher.group().length() - 1));
             }
         }
         return listImgSrc;
     }
-
-//    @Override
-//    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-//        super.onCreateContextMenu(menu, v, menuInfo);
-//        MenuItem.OnMenuItemClickListener handler = new MenuItem.OnMenuItemClickListener() {
-//            public boolean onMenuItemClick(MenuItem item) {
-//                if (item.getTitle() == "保存到手机") {
-//                    new SaveImage().execute(); // Android 4.0以后要使用线程来访问网络
-//                } else {
-//                    return false;
-//                }
-//                return true;
-//            }
-//        };
-//
-//        if (v instanceof WebView) {
-//            WebView.HitTestResult result = ((WebView) v).getHitTestResult();
-//            if (result != null) {
-//                int type = result.getType();
-//                if (type == WebView.HitTestResult.IMAGE_TYPE || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
-//                    longClickUrl = result.getExtra();
-//                    menu.setHeaderTitle("提示");
-//                    menu.add(0, v.getId(), 0, "保存到手机").setOnMenuItemClickListener(handler);
-//                }
-//            }
-//        }
-//    }
-
-//    /***
-//     * 功能：用线程保存图片
-//     *
-//     * @author wangyp
-//     */
-//    private class SaveImage extends AsyncTask<String, Void, String> {
-//        @Override
-//        protected String doInBackground(String... params) {
-//            String result = "";
-//            try {
-//                String sdcard = Environment.getExternalStorageDirectory().toString();
-//                File file = new File(sdcard + "/Download");
-//                if (!file.exists()) {
-//                    file.mkdirs();
-//                }
-//                int idx = longClickUrl.lastIndexOf(".");
-//                String ext = longClickUrl.substring(idx);
-//                file = new File(sdcard + "/Download/" + new Date().getTime() + ext);
-//                InputStream inputStream = null;
-//                URL url = new URL(longClickUrl);
-//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//                conn.setRequestMethod("GET");
-//                conn.setConnectTimeout(20000);
-//                if (conn.getResponseCode() == 200) {
-//                    inputStream = conn.getInputStream();
-//                }
-//                byte[] buffer = new byte[4096];
-//                int len = 0;
-//                FileOutputStream outStream = new FileOutputStream(file);
-//                while ((len = inputStream.read(buffer)) != -1) {
-//                    outStream.write(buffer, 0, len);
-//                }
-//                outStream.close();
-//                result = "图片已保存至：" + file.getAbsolutePath();
-//            } catch (Exception e) {
-//                result = "保存失败！" + e.getLocalizedMessage();
-//            }
-//            return result;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//
-//        }
-//    }
-
 
     /**
      * 开始下载图片
