@@ -1,10 +1,16 @@
-package com.peng3.big.big.showzoomableimagefromwebview;
+package utils;
 
 import android.content.Context;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.peng3.big.big.activity.R;
+
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * Description : 图片加载工具类
@@ -27,7 +33,7 @@ public class ImageLoaderUtils {
         Glide.with(context).load(url).thumbnail(0.8f).into(imageView);
     }
 
-    public static void displayWhole(Context context, ImageView imageView, String url) {
+    public static void displayWhole(Context context, final ImageView imageView, String url, final PhotoViewAttacher photoViewAttacher) {
         if (imageView == null) {
             throw new IllegalArgumentException("argument error");
         }
@@ -37,7 +43,15 @@ public class ImageLoaderUtils {
                 load(url)
                 .placeholder(R.drawable.avatar_default)
                 .error(R.drawable.image_default_rect)
-                 .into(imageView);
+                 .into(new GlideDrawableImageViewTarget(imageView){
+                     @Override
+                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                         super.onResourceReady(resource, animation);
+                         if (photoViewAttacher!=null){
+                             photoViewAttacher.update();
+                         }
+                     }
+                 });
 
     }
 

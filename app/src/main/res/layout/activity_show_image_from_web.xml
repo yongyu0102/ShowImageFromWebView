@@ -4,14 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
-    tools:context="com.peng3.big.big.showzoomableimagefromwebview.ShowImageFromWebActivity">
-    <android.support.v4.view.ViewPager
+    tools:context="activity.ShowImageFromWebActivity">
+    <view.PhotoViewViewPager
         android:id="@+id/vp_image_brower"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-    </android.support.v4.view.ViewPager>
-
-
+    </view.PhotoViewViewPager>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -1,31 +1,26 @@
-package com.peng3.big.big.showzoomableimagefromwebview;
+package activity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import utils.ActionSheetDialog;
+import com.peng3.big.big.activity.R;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +32,7 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import utils.OkHttpUtil;
 
 /**
  * Email  : bigbigpeng3@gmail.com
@@ -217,6 +213,7 @@ public class MainActivity extends Activity {
             intent.putStringArrayListExtra(URL_ALL, (ArrayList<String>) listImgSrc);
 //            intent.setClass(context, ShowWebImageActivity.class);
             intent.setClass(context, ShowImageFromWebActivity.class);
+//            intent.setClass(context,PicViewerActivity.class);
             context.startActivity(intent);
             System.out.println(img);
         }
