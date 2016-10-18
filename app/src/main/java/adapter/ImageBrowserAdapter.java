@@ -6,10 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-
-import uk.co.senab.photoview.PhotoViewAttacher;
-import utils.ImageLoaderUtils;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -19,7 +15,7 @@ import com.peng3.big.big.activity.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.co.senab.photoview.PhotoView;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class ImageBrowserAdapter extends PagerAdapter {
 
@@ -67,7 +63,7 @@ public class ImageBrowserAdapter extends PagerAdapter {
 		String picUrl = picUrls.get(position);
 		photoViewAttacher=new PhotoViewAttacher(iv_image_browser);
 //		photoViewAttacher.canZoom();
-//		photoViewAttacher.setScaleType(ImageView.ScaleType.FIT_XY);
+		photoViewAttacher.setScaleType(ImageView.ScaleType.FIT_CENTER);
 //		photoViewAttacher.setZoomable(true);
 		// 启用图片缩放功能
 //		iv_image_browser.setEnabled(true);
