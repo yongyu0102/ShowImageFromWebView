@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+<<<<<<< HEAD
     android:gravity="center"
     android:orientation="vertical">
 
@@ -31,3 +32,34 @@
     </ScrollView>
 
     </RelativeLayout>
+=======
+    android:gravity="center">
+    <ScrollView
+        android:fillViewport="true"
+        android:scrollbars="none"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+
+            <com.bm.library.PhotoView
+                android:layout_centerVertical="true"
+                android:id="@+id/show_webimage_imageview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:background="@android:color/white"
+                android:scaleType="fitXY"
+                android:src="@drawable/image_default_rect" />
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>
+>>>>>>> 0831dd24e7b54faf66ebc17009a3bdac575b3baa

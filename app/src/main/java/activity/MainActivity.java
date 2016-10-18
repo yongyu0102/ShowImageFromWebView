@@ -41,6 +41,7 @@ import utils.OkHttpUtil;
  * 时间：2016/10/18 :23:11
  */
 public class MainActivity extends Activity {
+
     private static final String TAG = MainActivity.class.getSimpleName();
     // 获取img标签正则
     private static final String IMAGE_URL_TAG = "<img.*src=(.*?)[^>]*?>";
@@ -64,17 +65,7 @@ public class MainActivity extends Activity {
         mWebView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (v instanceof WebView) {
-                    WebView.HitTestResult result = ((WebView) v).getHitTestResult();
-                    if (result != null) {
-                        int type = result.getType();
-                        if (type == WebView.HitTestResult.IMAGE_TYPE || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
-                            longClickUrl = result.getExtra();
-                            //如果长按在图片上，那么弹出 Dialog 进行保存长按的图片
-                           showDialog(longClickUrl);
-                        }
-                    }
-                }
+                responseWebLongClick(v);
                 return false;
             }
         });
@@ -99,11 +90,13 @@ public class MainActivity extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+
                 // web 页面加载完成，添加监听图片的点击 js 函数
                 addImageClickListener();
-                //解析获取 Html 文本
-                view.loadUrl("javascript:window.local_obj.showSource('<head>'+"
-                        + "document.getElementsByTagName('html')[0].innerHTML+'</head>');");
+   
+                //解析 HTML
+                parseHTML(view);
+
             }
 
             @Override
@@ -112,24 +105,27 @@ public class MainActivity extends Activity {
             }
         });
 
-        mWebView.setWebChromeClient(new WebChromeClient() {
-
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                super.onProgressChanged(view, newProgress);
-            }
-
-            // 网页标题
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                super.onReceivedTitle(view, title);
-
-            }
-        });
-
         mWebView.loadUrl(url);
         mHandler=new Handler();
 
+    }
+
+    private void parseHTML(WebView view) {
+        view.loadUrl("javascript:window.local_obj.showSource('<head>'+"
+                + "document.getElementsByTagName('html')[0].innerHTML+'</head>');");
+    }
+
+    private void responseWebLongClick(View v) {
+        if (v instanceof WebView) {
+            WebView.HitTestResult result = ((WebView) v).getHitTestResult();
+            if (result != null) {
+                int type = result.getType();
+                if (type == WebView.HitTestResult.IMAGE_TYPE || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+                    longClickUrl = result.getExtra();
+                   showDialog(longClickUrl);
+                }
+            }
+        }
     }
 
     /**
@@ -137,19 +133,21 @@ public class MainActivity extends Activity {
      * @param url 点击图片对应的 url
      */
     private void showDialog(final String url) {
-          new ActionSheetDialog(this)
+
+        new ActionSheetDialog(this)
                 .builder()
                 .setCancelable(true)
                 .setCanceledOnTouchOutside(true)
                 .addSheetItem(
-                "保存到相册",
-                ActionSheetDialog.SheetItemColor.Blue,
-                new ActionSheetDialog.OnSheetItemClickListener() {
-                    @Override
-                    public void onClick(int which) {
-                        downloadImage(url);
-                    }
-                }).show();
+
+                        "保存到相册",
+                        ActionSheetDialog.SheetItemColor.Blue,
+                        new ActionSheetDialog.OnSheetItemClickListener() {
+                            @Override
+                            public void onClick(int which) {
+                                downloadImage(url);
+                            }
+                        }).show();
     }
 
     /**
@@ -236,8 +234,6 @@ public class MainActivity extends Activity {
         }
         return listImgSrc;
     }
-
-
 
     /**
      * 开始下载图片
