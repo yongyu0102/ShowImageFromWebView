@@ -1,4 +1,4 @@
-package com.peng3.big.big.showzoomableimagefromwebview;
+package com.peng3.big.big.activity;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

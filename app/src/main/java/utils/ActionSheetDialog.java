@@ -1,4 +1,4 @@
-package com.peng3.big.big.showzoomableimagefromwebview;
+package utils;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -12,6 +12,8 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import com.peng3.big.big.activity.R;
 
 import java.util.ArrayList;
 import java.util.List;

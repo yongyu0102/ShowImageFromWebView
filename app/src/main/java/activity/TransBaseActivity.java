@@ -1,4 +1,4 @@
-package com.peng3.big.big.showzoomableimagefromwebview;
+package activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

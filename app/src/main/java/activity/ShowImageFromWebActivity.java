@@ -1,93 +1,126 @@
-package com.peng3.big.big.showzoomableimagefromwebview;
+package activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bm.library.PhotoView;
+import com.peng3.big.big.activity.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
+import adapter.ImageBrowserAdapter;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import utils.OkHttpUtil;
 
-/**
- * Email  : bigbigpeng3@gmail.com
- * Author : peng zhang
- * 通过photoview来加载网页中的图片
- */
-public class ShowWebImageActivity extends TransBaseActivity implements View.OnClickListener {
+public class ShowImageFromWebActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = ShowImageFromWebActivity.class.getSimpleName()+"NOW";
+    private ViewPager vpImageBrower;
+    private TextView tvImageIndex;
+    private Button btnSave;
 
-    //获取图片的地址
-    private String imageUrl = null;
-
-    //用户放大,缩小,旋转,
-    private PhotoView imageView = null;
-
-    private ImageButton btnBack;
-    private Button btnDownload;
-
+    private ImageBrowserAdapter adapter;
+    private ArrayList<String> imgUrls;
+    private String url;
+    private int currentIndex;
     private Handler mHandler;
-
+    private String longClickUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_show_image_from_web);
+        initView();
+        initListener();
+        initData();
+    }
 
-        btnBack = (ImageButton) findViewById(R.id.btn_back);
-        btnBack.setOnClickListener(this);
-
-        btnDownload = (Button) findViewById(R.id.btn_download);
-        btnDownload.setOnClickListener(this);
-
-        imageUrl = getIntent().getStringExtra("image");
-        //photoview
-        imageView = (PhotoView) findViewById(R.id.show_webimage_imageview);
-        // 启用图片缩放功能
-        imageView.enable();
-        //显示图片
-        ImageLoaderUtils.displayWhole(this, imageView, imageUrl);
+    private void initView(){
+        vpImageBrower = (ViewPager) findViewById(R.id.vp_image_brower);
+        tvImageIndex = (TextView) findViewById(R.id.tv_image_index);
+        btnSave = (Button) findViewById(R.id.btn_save);
+    }
 
 
+    private void initData(){
         mHandler = new Handler();
+        imgUrls=getIntent().getStringArrayListExtra(MainActivity.URL_ALL);
+        url=getIntent().getStringExtra("image");
+        Log.d(TAG,url);
+        int position=imgUrls.indexOf(url);
+        adapter=new ImageBrowserAdapter(this,imgUrls);
+        vpImageBrower.setAdapter(adapter);
+        final int size=imgUrls.size();
+        int initPosition = Integer.MAX_VALUE / 2 / size * size + position;
 
+        if(size > 1) {
+            tvImageIndex.setVisibility(View.VISIBLE);
+            tvImageIndex.setText((position+1) + "/" + size);
+        } else {
+            tvImageIndex.setVisibility(View.GONE);
+        }
+
+
+        vpImageBrower.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            @Override
+            public void onPageSelected(int arg0) {
+                currentIndex=arg0;
+                int index = arg0 % size;
+                tvImageIndex.setText((index+1) + "/" + size);
+
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        vpImageBrower.setCurrentItem(position);
     }
 
-
-    @Override
-    protected int getLayoutResId() {
-        return R.layout.activity_show_webimage;
+    private void initListener(){
+        btnSave.setOnClickListener(this);
     }
 
-
     @Override
-    public void onClick(View view) {
-
-        if (view == btnBack) {
-
-            finish();
-        } else if (view == btnDownload) {
-
-            Toast.makeText(getApplicationContext(), "开始下载图片", Toast.LENGTH_SHORT).show();
-
-            downloadImage();
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_save :
+                Toast.makeText(getApplicationContext(), "开始下载图片", Toast.LENGTH_SHORT).show();
+                downloadImage();
+                break;
         }
     }
+
+
 
     /**
      * 开始下载图片
      */
     private void downloadImage() {
-        downloadAsyn(imageUrl, Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImagesFromWebView");
+        downloadAsyn(imgUrls.get(currentIndex), Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImagesFromWebView");
     }
 
 
