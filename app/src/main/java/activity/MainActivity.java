@@ -110,7 +110,13 @@ public class MainActivity extends Activity {
 
     }
 
+    /**
+     *  java 调取 js 代码
+     * @param view WebView
+     */
     private void parseHTML(WebView view) {
+        //这段 js 代码是解析获取到了 Html 文本文件，然后调用本地定义的 Java 代码返回
+        //解析出来的 Html 文本文件
         view.loadUrl("javascript:window.local_obj.showSource('<head>'+"
                 + "document.getElementsByTagName('html')[0].innerHTML+'</head>');");
     }
@@ -167,17 +173,14 @@ public class MainActivity extends Activity {
                 "})()");
     }
 
-    // js 通信接口
+    // js 通信接口，定义供 JavaScript 调用的交互接口
     private class MyJavascriptInterface {
-
         private Context context;
-
         public MyJavascriptInterface(Context context) {
             this.context = context;
         }
-
         /**
-         * 点击图片启动新的 ShowImageFromWebActivity，并传入点击图片对应的 url 和页面所以图片
+         * 点击图片启动新的 ShowImageFromWebActivity，并传入点击图片对应的 url 和页面所有图片
          * 对应的 url
          * @param url 点击图片对应的 url
          */
@@ -194,11 +197,12 @@ public class MainActivity extends Activity {
 
     private class InJavaScriptLocalObj {
         /**
-         * 解析 WebView 加载对应的 Html 文本
+         * 获取要解析 WebView 加载对应的 Html 文本
          * @param html WebView 加载对应的 Html 文本
          */
         @android.webkit.JavascriptInterface
         public void showSource(String html) {
+            //从 Html 文件中提取页面所有图片对应的地址对象
             getAllImageUrlFromHtml(html);
         }
     }
@@ -215,6 +219,7 @@ public class MainActivity extends Activity {
         while (matcher.find()) {
             listImgUrl.add(matcher.group());
         }
+        //从图片对应的地址对象中解析出 src 标签对应的内容
         getAllImageUrlFormSrcObject(listImgUrl);
         return listImgUrl;
     }
@@ -222,7 +227,7 @@ public class MainActivity extends Activity {
     /***
      * 从图片对应的地址对象中解析出 src 标签对应的内容
      * 即 url，例如 "http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e"
-     * @param listImageUrl 图片地址对应，
+     * @param listImageUrl 图片地址对象，
      *  例如 <img src="http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e" />
      */
     private List<String> getAllImageUrlFormSrcObject(List<String> listImageUrl) {

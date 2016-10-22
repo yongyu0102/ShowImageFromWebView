@@ -120,7 +120,7 @@ public class ShowImageFromWebActivity extends Activity implements View.OnClickLi
      * 开始下载图片
      */
     private void downloadImage() {
-        downloadAsyn(imgUrls.get(currentIndex), Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImagesFromWebView");
+        downloadAsync(imgUrls.get(currentIndex), Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImagesFromWebView");
     }
 
 
@@ -130,10 +130,9 @@ public class ShowImageFromWebActivity extends Activity implements View.OnClickLi
      * @param url
      * @param destFileDir 本地文件存储的文件夹
      */
-    private void downloadAsyn(final String url, final String destFileDir) {
+    private void downloadAsync(final String url, final String destFileDir) {
 
         OkHttpUtil mOkHttpUtil = OkHttpUtil.getInstance();
-
         OkHttpClient mOkHttpClient = mOkHttpUtil.getOkHttpClient();
 
         final Request request = new Request.Builder()
