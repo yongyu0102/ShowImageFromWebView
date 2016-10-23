@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-import com.peng3.big.big.activity.R;
+import com.peng.zhang.activity.R;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 

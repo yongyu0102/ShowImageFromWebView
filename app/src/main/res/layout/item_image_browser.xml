@@ -3,12 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center">
-    <ScrollView
-        android:fillViewport="true"
-        android:scrollbars="none"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <RelativeLayout
             android:orientation="horizontal"
@@ -17,7 +11,7 @@
             android:gravity="center_vertical">
             <uk.co.senab.photoview.PhotoView
                 android:layout_centerVertical="true"
-                android:id="@+id/show_webimage_imageview"
+                android:id="@+id/pv_show_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
@@ -27,7 +21,5 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/image_default_rect" />
         </RelativeLayout>
-    </ScrollView>
-
 </RelativeLayout>
 

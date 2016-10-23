@@ -13,13 +13,16 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.peng3.big.big.activity.R;
+
+import com.peng.zhang.activity.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by suizexin on 2016/5/9.
+ * description: 自定义多选 dialog
+ * author：pz
+ * 时间：2016/10/23 :22:13
  */
 public class ActionSheetDialog {
     private Context context;

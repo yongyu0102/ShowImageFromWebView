@@ -6,7 +6,7 @@
     android:background="@android:color/black"
     tools:context="activity.ShowImageFromWebActivity">
     <view.PhotoViewViewPager
-        android:id="@+id/vp_image_brower"
+        android:id="@+id/vp_image_browser"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </view.PhotoViewViewPager>
@@ -18,13 +18,11 @@
         android:orientation="horizontal"
         android:padding="16dp" >
         <TextView
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:id="@+id/tv_image_index"
-            style="@style/TextViewHeadline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/shape_corner_rect_agray"
+            android:layout_width="75dp"
+            android:layout_height="36dp"
+            android:background="@drawable/shape_corner_rect_gray"
             android:gravity="center"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
@@ -41,10 +39,10 @@
             android:layout_weight="1" />
         <Button
             android:id="@+id/btn_save"
-            style="@style/TextViewSubhead"
-            android:layout_width="56dp"
+            android:textSize="@dimen/_16sp"
+            android:layout_width="75dp"
             android:layout_height="36dp"
-            android:background="@drawable/shape_corner_rect_agray"
+            android:background="@drawable/shape_corner_rect_gray"
             android:gravity="center"
             android:padding="4dp"
             android:text="保存"

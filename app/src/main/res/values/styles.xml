@@ -47,28 +47,7 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-    <style name="TextViewHeadline">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/txt_black</item>
-        <item name="android:textSize">@dimen/txtsize_headline</item>
-    </style>
 
-    <style name="TextViewTitle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/txt_black</item>
-        <item name="android:textSize">@dimen/txtsize_title</item>
-    </style>
-
-    <style name="TextViewSubhead">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/txt_black</item>
-        <item name="android:textSize">@dimen/txtsize_subhead</item>
-    </style>
 
     <style name="TextViewBody">
         <item name="android:layout_width">wrap_content</item>

@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.peng3.big.big.activity.R;
+
+import com.peng.zhang.activity.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,8 +28,7 @@ import okhttp3.Response;
 import utils.OkHttpUtil;
 
 public class ShowImageFromWebActivity extends Activity implements View.OnClickListener {
-    private static final String TAG = ShowImageFromWebActivity.class.getSimpleName()+"NOW";
-    private ViewPager vpImageBrower;
+    private ViewPager vpImageBrowser;
     private TextView tvImageIndex;
     private Button btnSave;
 
@@ -38,7 +37,6 @@ public class ShowImageFromWebActivity extends Activity implements View.OnClickLi
     private String url;
     private int currentIndex;
     private Handler mHandler;
-    private String longClickUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +47,7 @@ public class ShowImageFromWebActivity extends Activity implements View.OnClickLi
     }
 
     private void initView(){
-        vpImageBrower = (ViewPager) findViewById(R.id.vp_image_brower);
+        vpImageBrowser = (ViewPager) findViewById(R.id.vp_image_browser);
         tvImageIndex = (TextView) findViewById(R.id.tv_image_index);
         btnSave = (Button) findViewById(R.id.btn_save);
     }
@@ -59,12 +57,10 @@ public class ShowImageFromWebActivity extends Activity implements View.OnClickLi
         mHandler = new Handler();
         imgUrls=getIntent().getStringArrayListExtra(MainActivity.URL_ALL);
         url=getIntent().getStringExtra("image");
-        Log.d(TAG,url);
         int position=imgUrls.indexOf(url);
         adapter=new ImageBrowserAdapter(this,imgUrls);
-        vpImageBrower.setAdapter(adapter);
+        vpImageBrowser.setAdapter(adapter);
         final int size=imgUrls.size();
-        int initPosition = Integer.MAX_VALUE / 2 / size * size + position;
 
         if(size > 1) {
             tvImageIndex.setVisibility(View.VISIBLE);
@@ -74,7 +70,7 @@ public class ShowImageFromWebActivity extends Activity implements View.OnClickLi
         }
 
 
-        vpImageBrower.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        vpImageBrowser.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
             public void onPageSelected(int arg0) {
@@ -97,7 +93,7 @@ public class ShowImageFromWebActivity extends Activity implements View.OnClickLi
             }
         });
 
-        vpImageBrower.setCurrentItem(position);
+        vpImageBrowser.setCurrentItem(position);
     }
 
     private void initListener(){
@@ -113,7 +109,6 @@ public class ShowImageFromWebActivity extends Activity implements View.OnClickLi
                 break;
         }
     }
-
 
 
     /**

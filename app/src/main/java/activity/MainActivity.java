@@ -3,20 +3,16 @@ package activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import utils.ActionSheetDialog;
-import com.peng3.big.big.activity.R;
+
+import com.peng.zhang.activity.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,6 +29,7 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import utils.ActionSheetDialog;
 import utils.OkHttpUtil;
 
 /**
@@ -52,7 +49,8 @@ public class MainActivity extends Activity {
     private WebView mWebView;
 
     private List<String> listImgSrc = new ArrayList<>();
-    private String url= "http://www.jianshu.com/p/d614bb028588";
+//    private String url= "http://www.jianshu.com/p/d614bb028588";
+    private String url="http://news.sina.com.cn/china/xlxw/2016-10-23/doc-ifxwztru6946123.shtml";
     private String longClickUrl;
     private Handler mHandler;
 
@@ -121,13 +119,19 @@ public class MainActivity extends Activity {
                 + "document.getElementsByTagName('html')[0].innerHTML+'</head>');");
     }
 
+    /**
+     * 响应 WebView 长按图片的点击事件
+     * @param v
+     */
     private void responseWebLongClick(View v) {
         if (v instanceof WebView) {
             WebView.HitTestResult result = ((WebView) v).getHitTestResult();
             if (result != null) {
                 int type = result.getType();
+                //判断点击类型如果是图片
                 if (type == WebView.HitTestResult.IMAGE_TYPE || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
                     longClickUrl = result.getExtra();
+                    //弹出对话框
                    showDialog(longClickUrl);
                 }
             }
@@ -135,22 +139,21 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * 长按 WebView 中图片弹出对话框
+     * 长按 WebView 中图片弹出对话框，可以选择保存图片
      * @param url 点击图片对应的 url
      */
     private void showDialog(final String url) {
-
         new ActionSheetDialog(this)
                 .builder()
                 .setCancelable(true)
                 .setCanceledOnTouchOutside(true)
                 .addSheetItem(
-
                         "保存到相册",
                         ActionSheetDialog.SheetItemColor.Blue,
                         new ActionSheetDialog.OnSheetItemClickListener() {
                             @Override
                             public void onClick(int which) {
+                                //下载图片
                                 downloadImage(url);
                             }
                         }).show();
