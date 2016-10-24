@@ -13,31 +13,16 @@ import com.peng.zhang.activity.R;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
- * Description : 图片加载工具类
+ * description：图片加载工具类
+ * author：pz
+ * data：2016/10/24
  */
 public class ImageLoaderUtils {
 
-    public static void display(Context context, ImageView imageView, String url, int placeholder, int error) {
+    public static void displayScaleImage(Context context, final ImageView imageView, String url, final PhotoViewAttacher photoViewAttacher) {
         if (imageView == null) {
             throw new IllegalArgumentException("argument error");
         }
-        Glide.with(context).load(url).thumbnail(0.8f).placeholder(placeholder)
-                .error(error).crossFade().fitCenter().into(imageView);
-    }
-
-    public static void display(Context context, ImageView imageView, String url) {
-        if (imageView == null) {
-            throw new IllegalArgumentException("argument error");
-        }
-
-        Glide.with(context).load(url).thumbnail(0.8f).into(imageView);
-    }
-
-    public static void displayWhole(Context context, final ImageView imageView, String url, final PhotoViewAttacher photoViewAttacher) {
-        if (imageView == null) {
-            throw new IllegalArgumentException("argument error");
-        }
-        Log.d("ImageBrowserAdapter",url);
 
         Glide.with(context).
                 load(url)
@@ -49,6 +34,7 @@ public class ImageLoaderUtils {
                          super.onResourceReady(resource, animation);
                          if (photoViewAttacher!=null){
                              photoViewAttacher.update();
+                             photoViewAttacher.setZoomable(true);
                          }
                      }
                  });
