@@ -2,12 +2,11 @@ package view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.view.View;
 import android.webkit.WebView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -15,6 +14,7 @@ import java.util.regex.Pattern;
 
 import activity.ShowImageFromWebActivity;
 import utils.Constant;
+import utils.ImageLoaderUtils;
 
 /**
  * 可以实现点击图片进行保存的 WebView
@@ -23,11 +23,10 @@ import utils.Constant;
 public class ShowImageWebView extends WebView {
 
     private List<String> listImgSrc = new ArrayList<>();
-
     // 获取img标签正则
-    private static final String IMGURL_REG = "<img.*src=(.*?)[^>]*?>";
+    private static final String IMAGE_URL_TAG = "<img.*src=(.*?)[^>]*?>";
     // 获取src路径的正则
-    private static final String IMGSRC_REG = "http:\"?(.*?)(\"|>|\\s+)";
+    private static final String IMAGE_URL_CONTENT = "http:\"?(.*?)(\"|>|\\s+)";
 
     private String url;
     private String longClickUrl;
@@ -53,7 +52,7 @@ public class ShowImageWebView extends WebView {
         this.setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                responseWebLongClick(v);
+                 setWebImageLongClickListener(v);
                 return false;
             }
         });
@@ -62,7 +61,7 @@ public class ShowImageWebView extends WebView {
         this.getSettings().setDefaultTextEncodingName("UTF -8");
 
         //载入js
-        this.addJavascriptInterface(new MyJavascriptInterface(context), "imagelistner");
+        this.addJavascriptInterface(new MyJavascriptInterface(context), "imageListener");
         //获取 html
         this.addJavascriptInterface(new InJavaScriptLocalObj(), "local_obj");
     }
@@ -71,7 +70,7 @@ public class ShowImageWebView extends WebView {
      * 响应长按点击事件
      * @param v
      */
-    private void responseWebLongClick(View v) {
+    private void setWebImageLongClickListener(View v) {
         if (v instanceof WebView) {
             HitTestResult result = ((WebView) v).getHitTestResult();
             if (result != null) {
@@ -94,6 +93,94 @@ public class ShowImageWebView extends WebView {
     }
 
     /**
+     * 注入 js 函数监听，这段 js 函数的功能就是，遍历所有的图片，并添加 onclick 函数，实现点击事件，
+     * 函数的功能是在图片点击的时候调用本地java接口并传递 url 过去
+     */
+    public void setImageClickListner() {
+        // 这段js函数的功能就是，遍历所有的img几点，并添加onclick函数，函数的功能是在图片点击的时候调用本地java接口并传递url过去
+        this.loadUrl("javascript:(function(){" +
+                "var objs = document.getElementsByTagName(\"img\"); " +
+                "for(var i=0;i<objs.length;i++)  " +
+                "{"
+                + "    objs[i].onclick=function()  " +
+                "    {  "
+                + "        window.imageListener.startShowImageActivity(this.src);  " +
+                "    }  " +
+                "}" +
+                "})()");
+    }
+
+    // js 通信接口，定义供 JavaScript 调用的交互接口
+    private class MyJavascriptInterface {
+        private Context context;
+        public MyJavascriptInterface(Context context) {
+            this.context = context;
+        }
+
+        /**
+         * 点击图片启动新的 ShowImageFromWebActivity，并传入点击图片对应的 url 和页面所有图片
+         * 对应的 url
+         *
+         * @param url 点击图片对应的 url
+         */
+        @android.webkit.JavascriptInterface
+        public void startShowImageActivity(String url) {
+            Intent intent = new Intent();
+            intent.putExtra(Constant.IMAGE_URL, url);
+            intent.putStringArrayListExtra(Constant.IMAGE_URL_ALL, (ArrayList<String>) listImgSrc);
+            intent.setClass(context, ShowImageFromWebActivity.class);
+            context.startActivity(intent);
+        }
+    }
+
+    private class InJavaScriptLocalObj {
+        /**
+         * 获取要解析 WebView 加载对应的 Html 文本
+         *
+         * @param html WebView 加载对应的 Html 文本
+         */
+        @android.webkit.JavascriptInterface
+        public void showSource(String html) {
+            //从 Html 文件中提取页面所有图片对应的地址对象
+            getAllImageUrlFromHtml(html);
+        }
+    }
+
+    /***
+     * 获取页面所有图片对应的地址对象，
+     * 例如 <img src="http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e" />
+     *
+     * @param html WebView 加载的 html 文本
+     * @return
+     */
+    private List<String> getAllImageUrlFromHtml(String html) {
+        Matcher matcher = Pattern.compile(IMAGE_URL_TAG).matcher(html);
+        List<String> listImgUrl = new ArrayList<String>();
+        while (matcher.find()) {
+            listImgUrl.add(matcher.group());
+        }
+        //从图片对应的地址对象中解析出 src 标签对应的内容
+        getAllImageUrlFormSrcObject(listImgUrl);
+        return listImgUrl;
+    }
+
+    /***
+     * 从图片对应的地址对象中解析出 src 标签对应的内容,即 url
+     * 例如 "http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e"
+     * @param listImageUrl 图片地址对象，
+     *                     例如 <img src="http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e" />
+     */
+    private List<String> getAllImageUrlFormSrcObject(List<String> listImageUrl) {
+        for (String image : listImageUrl) {
+            Matcher matcher = Pattern.compile(IMAGE_URL_CONTENT).matcher(image);
+            while (matcher.find()) {
+                listImgSrc.add(matcher.group().substring(0, matcher.group().length() - 1));
+            }
+        }
+        return listImgSrc;
+    }
+
+    /**
      * 长按 WebView 图片弹出 Dialog
      * @param url
      */
@@ -113,121 +200,11 @@ public class ShowImageWebView extends WebView {
                         }).show();
     }
 
-    //下载图片
-    private File bitmap=null;
-    private void downloadImage(final String url) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-//                      bitmap= ImageUtils.loadPictureForResult(Environment.getExternalStorageDirectory().getAbsolutePath() + "/cab",url,100,100);
-//                    ShowImageWebView.this.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if(bitmap!=null){
-//                                ToastManager.show("保存成功");
-//                                sendBroadcast(bitmap);
-//                            }else {
-//                                ToastManager.show("保存失败，请检查网络连接");
-//                            }
-//                        }
-//                    });
-
-                }
-            }).start();
-    }
-
     /**
-     * 发送广播更新相册
-     * @param file
+     * 开始下载图片
      */
-    private void sendBroadcast(File file){
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(file);
-        intent.setData(uri);
-        context.sendBroadcast(intent);
-    }
-
-    /**
-     *   注入js函数监听
-     *   该方法在 setWebViewClient 的 onPageFinished 方法中进行调用
-     */
-    public void addImageClickListner() {
-        // 这段js函数的功能就是，遍历所有的img几点，并添加onclick函数，函数的功能是在图片点击的时候调用本地java接口并传递url过去
-        this.loadUrl("javascript:(function(){" +
-                "var objs = document.getElementsByTagName(\"img\"); " +
-                "for(var i=0;i<objs.length;i++)  " +
-                "{"
-                + "    objs[i].onclick=function()  " +
-                "    {  "
-                + "        window.imagelistner.openImage(this.src);  " +
-                "    }  " +
-                "}" +
-                "})()");
-    }
-
-    // js通信接口
-    public class MyJavascriptInterface {
-
-        private Context context;
-
-        public MyJavascriptInterface(Context context) {
-            this.context = context;
-        }
-
-        @android.webkit.JavascriptInterface
-        public void openImage(String img) {
-            System.out.println(img);
-            Intent intent = new Intent();
-            //点击图片 url
-            intent.putExtra(Constant.IMAGE_URL, img);
-            //页面所以图片 url
-            intent.putStringArrayListExtra(Constant.IMAGE_URL_ALL, (ArrayList<String>) listImgSrc);
-            intent.setClass(context, ShowImageFromWebActivity.class);
-            context.startActivity(intent);
-        }
-    }
-
-    /**
-     * 打印 Html 内容
-     */
-    final class InJavaScriptLocalObj {
-        @android.webkit.JavascriptInterface
-        public void showSource(String html) {
-            getImageUrl(html);
-        }
-    }
-
-    /***
-     * 获取ImageUrl地址标签
-     *
-     * @param HTML
-     * @return
-     */
-    private List<String> getImageUrl(String HTML) {
-        Matcher matcher = Pattern.compile(IMGURL_REG).matcher(HTML);
-        List<String> listImgUrl = new ArrayList<String>();
-        while (matcher.find()) {
-            listImgUrl.add(matcher.group());
-        }
-        getImageSrc(listImgUrl);
-        return listImgUrl;
-    }
-
-    /***
-     * 获取ImageSrc地址
-     *
-     * @param listImageUrl
-     * @return
-     */
-    private List<String> getImageSrc(List<String> listImageUrl) {
-        for (String image : listImageUrl) {
-            Matcher matcher = Pattern.compile(IMGSRC_REG).matcher(image);
-            listImgSrc.clear();
-            while (matcher.find()) {
-                listImgSrc.add(matcher.group().substring(0, matcher.group().length() - 1));
-            }
-        }
-        return listImgSrc;
+    private void downloadImage(String url) {
+        ImageLoaderUtils.downLoadImage(url,Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImagesFromWebView",context);
     }
 
 }

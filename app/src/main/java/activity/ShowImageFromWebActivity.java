@@ -15,6 +15,7 @@ import com.peng.zhang.activity.R;
 import java.util.ArrayList;
 
 import adapter.ImageBrowserAdapter;
+import utils.Constant;
 import utils.ImageLoaderUtils;
 
 public class ShowImageFromWebActivity extends Activity implements View.OnClickListener {
@@ -26,7 +27,7 @@ public class ShowImageFromWebActivity extends Activity implements View.OnClickLi
     private ArrayList<String> imgUrls;
     private String url;
     private int currentIndex;
-    private Handler mHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,37 +37,34 @@ public class ShowImageFromWebActivity extends Activity implements View.OnClickLi
         initData();
     }
 
-    private void initView(){
+    private void initView() {
         vpImageBrowser = (ViewPager) findViewById(R.id.vp_image_browser);
         tvImageIndex = (TextView) findViewById(R.id.tv_image_index);
         btnSave = (Button) findViewById(R.id.btn_save);
     }
 
-
-    private void initData(){
-        mHandler = new Handler();
-        imgUrls=getIntent().getStringArrayListExtra(MainActivity.URL_ALL);
-        url=getIntent().getStringExtra("image");
-        int position=imgUrls.indexOf(url);
-        adapter=new ImageBrowserAdapter(this,imgUrls);
+    private void initData() {
+        imgUrls = getIntent().getStringArrayListExtra(Constant.IMAGE_URL_ALL);
+        url = getIntent().getStringExtra(Constant.IMAGE_URL);
+        int position = imgUrls.indexOf(url);
+        adapter = new ImageBrowserAdapter(this, imgUrls);
         vpImageBrowser.setAdapter(adapter);
-        final int size=imgUrls.size();
+        final int size = imgUrls.size();
 
-        if(size > 1) {
+        if (size > 1) {
             tvImageIndex.setVisibility(View.VISIBLE);
-            tvImageIndex.setText((position+1) + "/" + size);
+            tvImageIndex.setText((position + 1) + "/" + size);
         } else {
             tvImageIndex.setVisibility(View.GONE);
         }
-
 
         vpImageBrowser.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
             public void onPageSelected(int arg0) {
-                currentIndex=arg0;
+                currentIndex = arg0;
                 int index = arg0 % size;
-                tvImageIndex.setText((index+1) + "/" + size);
+                tvImageIndex.setText((index + 1) + "/" + size);
 
             }
 
@@ -86,28 +84,24 @@ public class ShowImageFromWebActivity extends Activity implements View.OnClickLi
         vpImageBrowser.setCurrentItem(position);
     }
 
-    private void initListener(){
+    private void initListener() {
         btnSave.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btn_save :
-                Toast.makeText(getApplicationContext(), "开始下载图片", Toast.LENGTH_SHORT).show();
+        switch (v.getId()) {
+            case R.id.btn_save:
                 downloadImage();
                 break;
         }
     }
 
-
     /**
      * 开始下载图片
      */
     private void downloadImage() {
-        ImageLoaderUtils.downLoadImage(imgUrls.get(currentIndex),Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImagesFromWebView",this);
+        ImageLoaderUtils.downLoadImage(imgUrls.get(currentIndex), Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImagesFromWebView", this);
     }
-
-
 
 }
