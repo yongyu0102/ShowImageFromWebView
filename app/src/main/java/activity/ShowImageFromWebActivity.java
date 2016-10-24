@@ -205,4 +205,5 @@ public class ShowImageFromWebActivity extends Activity implements View.OnClickLi
         int separatorIndex = path.lastIndexOf("/");
         return (separatorIndex < 0) ? path : path.substring(separatorIndex + 1, path.length());
     }
+
 }
