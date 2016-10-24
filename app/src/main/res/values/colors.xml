@@ -51,15 +51,12 @@
     <color name="gray_diver2">#d6d4d7</color>
     <color name="green">#7ed321</color>
     <color name="origin">#f5a623</color>
-    <!--信息页面-->
     <color name="gray2">#9B9B9B</color>
-    <!--家族页面-->
     <color name="gray1">#a3a3a3</color>
 
     <color name="search_bg">#f5f6f8</color>
     <color name="search_text">#c4c4c4</color>
 
-    <!--yuanshuai-->
     <color name="gray_divider">#d2d1d2</color>
     <color name="bg_black">#4a4a4a</color>
     <color name="bg_guide_bt">#454d89</color>
@@ -67,23 +64,12 @@
     <color name="actionsheet_gray">#8F8F8F</color>
     <color name="actionsheet_blue">#037BFF</color>
     <color name="toast_backgrournd">#4a4949</color>
-    <!--我的收藏界面-->
-    <!--红色，删除按钮-->
     <color name="bg_red">#fe3b31</color>
     <color name="date_grey">#cccccc</color>
 
 
-    <!-- 客服应用主题色 -->
-    <color name="maincolor">#2DCDED</color>
-    <color name="maincolordark">#129872</color>
-    <color name="sidebar_letter_normal">#202020</color>
-    <color name="sidebar_letter_pressed">#21b38a</color>
-    <!-- 白色 -->
     <color name="all_white">#ffffff</color>
-    <!-- 黑色 -->
     <color name="all_black">#000000</color>
-    <!-- 透明 -->
-    <!-- 浅灰 -->
     <color name="lightgrey">#D6D6D6</color>
     <color name="grey">#8B8989</color>
     <color name="parent_dialog_bg">#EDEDED</color>

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
+import utils.ImageLoaderUtils;
 
 public class ImageBrowserAdapter extends PagerAdapter {
 
@@ -45,23 +46,10 @@ public class ImageBrowserAdapter extends PagerAdapter {
 		ImageView pvShowImage = (ImageView) view.findViewById(R.id.pv_show_image);
 		String picUrl = picUrls.get(position);
 		final  PhotoViewAttacher photoViewAttacher=new PhotoViewAttacher(pvShowImage);
-		photoViewAttacher.setScaleType(ImageView.ScaleType.FIT_CENTER);
 		photoViewAttacher.setZoomable(false);
+		photoViewAttacher.setScaleType(ImageView.ScaleType.FIT_CENTER);
 		photoViewAttacher.setMinimumScale(1F);
-		Glide.with(context).
-				load(picUrl)
-				.crossFade()
-				.placeholder(R.drawable.avatar_default)
-				.error(R.drawable.image_default_rect)
-				.into(new GlideDrawableImageViewTarget(pvShowImage){
-					@Override
-					public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
-						super.onResourceReady(resource, animation);
-						photoViewAttacher.setZoomable(true);
-						photoViewAttacher.update();
-					}
-				});
-
+		ImageLoaderUtils.displayScaleImage(context,pvShowImage,picUrl,photoViewAttacher);
 		container.addView(view);
 		return view;
 	}

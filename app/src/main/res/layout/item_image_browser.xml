@@ -18,7 +18,6 @@
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
                 android:background="@android:color/white"
-                android:scaleType="fitXY"
                 android:src="@drawable/image_default_rect" />
         </RelativeLayout>
 </RelativeLayout>
