@@ -25,7 +25,19 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.0'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.squareup.okio:okio:1.6.0'
-//    compile 'com.bm.photoview:library:1.4.0'
+    //photoView
     compile 'com.github.chrisbanes:PhotoView:1.3.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    /*网络请求 rotrofit+okhttp*/
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.3.0'
+    /*json解析 gson*/
+    compile 'com.google.code.gson:gson:2.7'
+    /*rx-android-java*/
+    compile 'io.reactivex:rxjava:1.1.9'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'com.trello:rxlifecycle:0.7.0'
+    compile 'com.trello:rxlifecycle-components:0.7.0'
 }

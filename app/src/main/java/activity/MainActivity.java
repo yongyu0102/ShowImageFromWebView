@@ -3,7 +3,6 @@ package activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -14,23 +13,13 @@ import android.widget.Toast;
 
 import com.peng.zhang.activity.R;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import utils.ActionSheetDialog;
-import utils.OkHttpUtil;
+import utils.ImageLoaderUtils;
+import view.ActionSheetDialog;
 
 /**
  * description: 加载 WebView 主界面
@@ -251,107 +240,7 @@ public class MainActivity extends Activity {
      * 开始下载图片
      */
     private void downloadImage(String url) {
-        downloadAsync(url, Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImagesFromWebView");
+        ImageLoaderUtils.downLoadImage(url,Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImagesFromWebView",this);
     }
 
-    /**
-     * 异步下载文件
-     *
-     * @param url
-     * @param destFileDir 本地文件存储的文件夹
-     */
-    private void downloadAsync(final String url, final String destFileDir) {
-
-        OkHttpUtil mOkHttpUtil = OkHttpUtil.getInstance();
-
-        OkHttpClient mOkHttpClient = mOkHttpUtil.getOkHttpClient();
-
-        final Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        final Call call = mOkHttpClient.newCall(request);
-
-        call.enqueue(new Callback() {
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-                Toast.makeText(getApplicationContext(), "下载失败,请检查网络设置", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-                InputStream is = null;
-                byte[] buf = new byte[2048];
-                int len = 0;
-                FileOutputStream fos = null;
-                try {
-                    is = response.body().byteStream();
-                    File file = new File(destFileDir);
-                    //如果file不存在,就创建这个file
-                    if (!file.exists()) {
-                        file.mkdir();
-                    }
-
-                    final File imageFile = new File(destFileDir, getFileName(url) + ".jpg");
-                    fos = new FileOutputStream(imageFile);
-                    while ((len = is.read(buf)) != -1) {
-                        fos.write(buf, 0, len);
-                    }
-                    fos.flush();
-                    //如果下载文件成功，第一个参数为文件的绝对路径
-                    //sendSuccessResultCallback(file.getAbsolutePath(), callback);
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "下载成功", Toast.LENGTH_SHORT).show();
-                            sendBroadcast(imageFile);
-                        }
-                    });
-
-                } catch (IOException e) {
-
-                    e.printStackTrace();
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            Toast.makeText(getApplicationContext(), "下载失败,请检查网络设置", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                } finally {
-                    try {
-                        if (is != null) is.close();
-                    } catch (IOException e) {
-                    }
-                    try {
-                        if (fos != null) fos.close();
-                    } catch (IOException e) {
-                    }
-                }
-
-            }
-        });
-    }
-
-    private String getFileName(String path) {
-        int separatorIndex = path.lastIndexOf("/");
-        return (separatorIndex < 0) ? path : path.substring(separatorIndex + 1, path.length()) + new Date().getTime();
-    }
-
-    /**
-     * description：更新相册
-     * author：pz
-     * data：2016/10/24
-     */
-    private void sendBroadcast(File file) {
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(file);
-        intent.setData(uri);
-        sendBroadcast(intent);
-    }
 }

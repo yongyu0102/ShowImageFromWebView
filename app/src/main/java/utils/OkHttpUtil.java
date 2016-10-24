@@ -2,10 +2,10 @@ package utils;
 
 
 import okhttp3.OkHttpClient;
-
 /**
- * Email  : bigbigpeng3@gmail.com
- * Author : peng zhang
+ * description：
+ * author：pz
+ * data：2016/10/24
  */
 public class OkHttpUtil {
 

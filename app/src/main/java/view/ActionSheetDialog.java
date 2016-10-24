@@ -1,4 +1,4 @@
-package utils;
+package view;
 
 import android.app.Dialog;
 import android.content.Context;
