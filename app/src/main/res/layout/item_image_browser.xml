@@ -10,13 +10,9 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical">
             <uk.co.senab.photoview.PhotoView
-                android:layout_centerVertical="true"
                 android:id="@+id/pv_show_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:adjustViewBounds="true"
                 android:background="@android:color/white"
                 android:src="@drawable/image_default_rect" />
         </RelativeLayout>
