@@ -46,7 +46,7 @@ public class ImageBrowserAdapter extends PagerAdapter {
 		ImageView pvShowImage = (ImageView) view.findViewById(R.id.pv_show_image);
 		String picUrl = picUrls.get(position);
 		final  PhotoViewAttacher photoViewAttacher=new PhotoViewAttacher(pvShowImage);
-		photoViewAttacher.setZoomable(false);
+//		photoViewAttacher.setZoomable(false);
 		photoViewAttacher.setScaleType(ImageView.ScaleType.FIT_CENTER);
 		photoViewAttacher.setMinimumScale(1F);
 		ImageLoaderUtils.displayScaleImage(context,pvShowImage,picUrl,photoViewAttacher);
