@@ -50,7 +50,6 @@ public class ImageLoaderUtils {
                         super.onResourceReady(resource, animation);
                         if (photoViewAttacher != null) {
                             photoViewAttacher.update();
-//                            photoViewAttacher.setZoomable(true);
                         }
                     }
                 });
